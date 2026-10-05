@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Job Aggregator</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Global Jobs">
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="manifest" href="manifest.json">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 min-h-screen pb-12">
+
+    <header class="bg-blue-600 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl font-bold flex items-center gap-2">
+                🌍 全球職缺聚合器
+            </h1>
+            <span class="text-xs bg-blue-500 px-2.5 py-1 rounded-full">更新：逢二、五</span>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 mt-6">
+        <div class="flex overflow-x-auto gap-2 pb-2 mb-4 no-scrollbar">
+            <button onclick="setRegion('HK')" id="btn-HK" class="region-btn px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap bg-blue-600 text-white shadow">🇭🇰 香港</button>
+            <button onclick="setRegion('SG')" id="btn-SG" class="region-btn px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap bg-white text-gray-600 border">🇸🇬 新加坡</button>
+            <button onclick="setRegion('UK')" id="btn-UK" class="region-btn px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap bg-white text-gray-600 border">🇬🇧 英國</button>
+            <button onclick="setRegion('AU')" id="btn-AU" class="region-btn px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap bg-white text-gray-600 border">🇦🇺 澳洲</button>
+        </div>
+
+        <div class="flex gap-2 mb-6">
+            <button onclick="setType('all')" id="type-all" class="type-btn text-xs px-3 py-1.5 rounded-lg bg-gray-900 text-white">全部類型</button>
+            <button onclick="setType('freelance')" id="type-freelance" class="type-btn text-xs px-3 py-1.5 rounded-lg bg-gray-200 text-gray-700">Freelance / 自由工作</button>
+            <button onclick="setType('fulltime')" id="type-fulltime" class="type-btn text-xs px-3 py-1.5 rounded-lg bg-gray-200 text-gray-700">Full-time / 全職</button>
+        </div>
+
+        <div id="job-list" class="space-y-4">
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+                <div class="flex justify-between items-start mb-2">
+                    <h3 class="font-bold text-lg text-blue-900">載入中或等待後端同步資料...</h3>
+                    <span class="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-md">Freelance</span>
+                </div>
+                <p class="text-sm text-gray-600 mb-3">公司名稱 · 地區</p>
+                <div class="bg-gray-50 p-3 rounded-xl text-xs text-gray-700 space-y-1 mb-4">
+                    <p>💡 AI 重點摘要：系統將於每星期二、五自動更新最新職缺。</p>
+                </div>
+                <a href="#" target="_blank" class="block text-center bg-blue-50 text-blue-600 font-medium py-2 rounded-xl text-sm hover:bg-blue-100 transition">查看職缺原文</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let currentRegion = 'HK';
+        let currentType = 'all';
+
+        const mockJobs = [
+            { region: 'HK', type: 'freelance', title: 'Senior UI/UX Designer (Contract)', company: 'TechSprint HK', location: '香港 (可Remote)', summary: '1. 負責應用程式介面設計。\n2. 專案為期 3 個月。\n3. 具備 Figma 經驗優先。', link: '#' },
+            { region: 'UK', type: 'fulltime', title: 'Frontend React Engineer', company: 'London Digital Lab', location: '倫敦 (混合辦公)', summary: '1. 使用 Next.js 開發網頁平台。\n2. 提供簽證贊助。\n3. 具備 3 年以上經驗。', link: '#' },
+            { region: 'SG', type: 'freelance', title: 'Graphic & Motion Designer', company: 'LionCity Media', location: '新加坡 (遠端)', summary: '1. 製作社交媒體宣傳短片。\n2. 計件或按月合約。\n3. 需附上作品集。', link: '#' },
+            { region: 'AU', type: 'fulltime', title: 'Full Stack Developer', company: 'Sydney Code Co.', location: '悉尼', summary: '1. 負責 Node.js 與 React 開發。\n2. 年薪吸引，福利完善。\n3. 歡迎海外申請。', link: '#' }
+        ];
+
+        function setRegion(region) {
+            currentRegion = region;
+            document.querySelectorAll('.region-btn').forEach(btn => {
+                btn.className = "region-btn px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap bg-white text-gray-600 border";
+            });
+            document.getElementById(`btn-${region}`).className = "region-btn px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap bg-blue-600 text-white shadow";
+            renderJobs();
+        }
+
+        function setType(type) {
+            currentType = type;
+            document.querySelectorAll('.type-btn').forEach(btn => {
+                btn.className = "type-btn text-xs px-3 py-1.5 rounded-lg bg-gray-200 text-gray-700";
+            });
+            document.getElementById(`type-${type}`).className = "type-btn text-xs px-3 py-1.5 rounded-lg bg-gray-900 text-white";
+            renderJobs();
+        }
+
+        function renderJobs() {
+            const listEl = document.getElementById('job-list');
+            const filtered = mockJobs.filter(job => {
+                const matchRegion = job.region === currentRegion;
+                const matchType = currentType === 'all' || job.type === currentType;
+                return matchRegion && matchType;
+            });
+
+            if (filtered.length === 0) {
+                listEl.innerHTML = `<div class="text-center py-12 text-gray-400 bg-white rounded-2xl border border-gray-100">暫無符合條件的職缺，請等待星期二/五自動更新！</div>`;
+                return;
+            }
+
+            listEl.innerHTML = filtered.map(job => `
+                <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold text-lg text-blue-900">${job.title}</h3>
+                        <span class="text-xs px-2 py-1 ${job.type === 'freelance' ? 'bg-green-100 text-green-700' : 'bg-purple-100 text-purple-700'} rounded-md">${job.type.toUpperCase()}</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-3">${job.company} · ${job.location}</p>
+                    <div class="bg-gray-50 p-3 rounded-xl text-xs text-gray-700 space-y-1 mb-4 whitespace-pre-line">
+                        💡 ${job.summary}
+                    </div>
+                    <a href="${job.link}" target="_blank" class="block text-center bg-blue-50 text-blue-600 font-medium py-2 rounded-xl text-sm hover:bg-blue-100 transition">查看職缺原文</a>
+                </div>
+            `).join('');
+        }
+
+        renderJobs();
+    </script>
+</body>
+</html>
