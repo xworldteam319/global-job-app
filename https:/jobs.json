@@ -1,0 +1,18 @@
+[
+  {
+    "title": "Senior UI/UX Designer",
+    "company": "Global Creative Studio",
+    "location": "uk",
+    "type": "full-time",
+    "summary": "負責帶領英倫團隊進行跨平台介面設計與使用者研究，提供具前瞻性嘅數位體驗。",
+    "url": "https://example.com"
+  },
+  {
+    "title": "Frontend Developer (React/PWA)",
+    "company": "Tech Solutions Ltd",
+    "location": "hk",
+    "type": "freelance",
+    "summary": "參與香港本地流動應用與網頁前端開發，優化效能並確保完美嘅響應式體驗。",
+    "url": "https://example.com"
+  }
+]
